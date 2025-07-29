@@ -37,7 +37,7 @@ Before you begin, ensure you have:
      jenkins_admin_username = "JenkinsAdmin"
      jenkins_admin_password = "JenkinsAdmin"
      environment            = "production"
-     key_name               = "Path\of\Your\KeyPair.pem"
+     key_name               = "Name of your key pair to be used."
      ```
 
 3. **Initialize Terraform**  

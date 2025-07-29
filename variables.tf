@@ -17,25 +17,7 @@ variable "environment" {
   description = "Environment name"
 }
 
-variable "jenkins_plugins" {
-  type = list(string)
-  default = [
-    "build-timeout",
-    "credentials-binding",
-    "timestamper",
-    "ws-cleanup",
-    "ant",
-    "gradle",
-    "workflow-aggregator",
-    "pipeline-github-lib",
-    "pipeline-stage-view",
-    "git",
-    "ssh-slaves",
-    "matrix-auth",
-    "pam-auth",
-    "ldap",
-    "email-ext",
-    "mailer"
-  ]
-  description = "List of Jenkins plugins to install"
+variable "key_name" {
+  type        = string
+  description = "Name of the SSH key pair to use"
 }

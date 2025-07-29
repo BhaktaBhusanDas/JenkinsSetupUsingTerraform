@@ -1,7 +1,7 @@
 resource "aws_instance" "Jenkins" {
   ami                    = "ami-0150ccaf51ab55a51"
   instance_type          = "t2.micro"
-  key_name               = "HelloDevOpsKeyPair"
+  key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.ssh_http.id]
 
   root_block_device {
