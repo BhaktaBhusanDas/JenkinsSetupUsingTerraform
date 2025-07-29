@@ -3,12 +3,12 @@ variable "jenkins_admin_username" {
   default     = "Admin"
   description = "Jenkins admin username"
 }
- 
+
 variable "jenkins_admin_password" {
   type        = string
   default     = "admin123"
   description = "Jenkins admin password"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "environment" {
@@ -18,8 +18,8 @@ variable "environment" {
 }
 
 variable "jenkins_plugins" {
-  type        = list(string)
-  default     = [
+  type = list(string)
+  default = [
     "build-timeout",
     "credentials-binding",
     "timestamper",

@@ -5,14 +5,14 @@ resource "aws_instance" "Jenkins" {
   vpc_security_group_ids = [aws_security_group.ssh_http.id]
 
   root_block_device {
-    volume_size = 20
-    volume_type = "gp3"
+    volume_size           = 20
+    volume_type           = "gp3"
     delete_on_termination = true
   }
 
   tags = {
-    Name  = "JenkinsServer"
-    Owner = "Bhakta Bhusan Das"
+    Name        = "JenkinsServer"
+    Owner       = "Bhakta Bhusan Das"
     Environment = var.environment
   }
 
@@ -22,7 +22,7 @@ resource "aws_instance" "Jenkins" {
   }))
 
   user_data_replace_on_change = true
-  
+
 }
 
 output "public_ip" {
