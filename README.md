@@ -34,12 +34,10 @@ Before you begin, ensure you have:
    - Copy or create `terraform.tfvars` in the project root  
    - Add your values:
      ```hcl
-     aws_region              = "us-east-1"
-     instance_type           = "t3.micro"
-     key_name                = "my-ssh-key"
-     jenkins_admin_username  = "JenkinsAdmin"
-     jenkins_admin_password  = "JenkinsAdmin"
-     environment             = "production"
+     jenkins_admin_username = "JenkinsAdmin"
+     jenkins_admin_password = "JenkinsAdmin"
+     environment         = "production"
+     key_name = "Path\of\Your\KeyPair.pem"
      ```
 
 3. **Initialize Terraform**  
@@ -76,4 +74,4 @@ After completion, Terraform outputs will display the public DNS or IP of your Je
 ```
 http://<EC2_PUBLIC_IP_OR_DNS>:8080
 ```
-Retrieve the initial admin password from the instance, then proceed with Jenkins setup and plugin installation.
+Use the admin username and password that you mentioned in the`terraform.tfvars`.
