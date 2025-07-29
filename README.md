@@ -36,8 +36,8 @@ Before you begin, ensure you have:
      ```hcl
      jenkins_admin_username = "JenkinsAdmin"
      jenkins_admin_password = "JenkinsAdmin"
-     environment         = "production"
-     key_name = "Path\of\Your\KeyPair.pem"
+     environment            = "production"
+     key_name               = "Path\of\Your\KeyPair.pem"
      ```
 
 3. **Initialize Terraform**  
