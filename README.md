@@ -74,4 +74,4 @@ After completion, Terraform outputs will display the public DNS or IP of your Je
 ```
 http://<EC2_PUBLIC_IP_OR_DNS>:8080
 ```
-Use the admin username and password that you mentioned in the`terraform.tfvars`.
+Use the admin username and password that you mentioned in the `terraform.tfvars`.
