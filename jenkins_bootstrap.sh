@@ -31,6 +31,11 @@ sudo systemctl restart tmp.mount
 # Install nodejs
 sudo yum install -y nodejs
 
+# Install Docker
+sudo yum install -y docker
+sudo systemctl enable --now docker
+sudo usermod -aG docker ec2-user
+
 # Install Java 17 (required for Jenkins)
 sudo yum install -y java-17-amazon-corretto
 
@@ -253,3 +258,6 @@ echo "Jenkins bootstrap completed successfully!"
 echo "Jenkins should be accessible at: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):8080"
 echo "Admin credentials: ${admin_username} / ${admin_password}"
 echo "Run 'sudo /usr/local/bin/jenkins-status.sh' to check status"
+# Adding the jenkins user to the docker group.
+sudo usermod -aG docker jenkins
+sudo systemctl restart jenkins
