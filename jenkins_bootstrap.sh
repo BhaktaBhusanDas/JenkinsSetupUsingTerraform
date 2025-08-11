@@ -11,9 +11,11 @@ echo "Starting Jenkins bootstrap process..."
 # Update system
 sudo yum update -y
 
-# Install htop command
+# Install htop command, git
 sudo yum install htop -y
+sudo yum install git -y
 
+#Creation of swapfile
 sudo dd if=/dev/zero of=/swapfile bs=1M count=4096 status=progress
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
@@ -25,6 +27,9 @@ Options=mode=1777,strictatime,noexec,nosuid,nodev,size=8G
 EOF
 sudo systemctl daemon-reload
 sudo systemctl restart tmp.mount
+
+# Install nodejs
+sudo yum install -y nodejs
 
 # Install Java 17 (required for Jenkins)
 sudo yum install -y java-17-amazon-corretto
@@ -89,7 +94,10 @@ def plugins = [
   'ldap',
   'email-ext',
   'mailer',
-  'dark-theme'
+  'docker-workflow',
+  'blueocean',
+  'dark-theme',
+  'nodejs'
 ]
 
 def newlyInstalled = false
