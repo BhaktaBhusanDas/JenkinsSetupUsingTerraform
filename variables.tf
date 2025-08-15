@@ -21,3 +21,13 @@ variable "key_name" {
   type        = string
   description = "Name of the SSH key pair to use"
 }
+
+variable "dockerhub_username" {
+  description = "Docker Hub username"
+  type        = string
+}
+
+variable "dockerhub_password" {
+  description = "Docker Hub password or access token"
+  type        = string
+}

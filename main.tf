@@ -17,8 +17,10 @@ resource "aws_instance" "Jenkins" {
   }
 
   user_data_base64 = base64encode(templatefile("${path.module}/jenkins_bootstrap.sh", {
-    admin_username = var.jenkins_admin_username
-    admin_password = var.jenkins_admin_password
+    admin_username     = var.jenkins_admin_username
+    admin_password     = var.jenkins_admin_password
+    dockerhub_username = var.dockerhub_username
+    dockerhub_password = var.dockerhub_password
   }))
 
   user_data_replace_on_change = true

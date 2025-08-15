@@ -48,11 +48,39 @@ sudo yum install -y jenkins
 # Create init.groovy.d directory
 sudo mkdir -p /var/lib/jenkins/init.groovy.d
 
-# Create systemd override to skip setup wizard
+
+# Create JCasC configuration
+mkdir -p /var/lib/jenkins/casc_configs
+
+cat > /var/lib/jenkins/casc_configs/jenkins.yaml << 'EOF'
+jenkins:
+  systemMessage: "Jenkins configured automatically by JCasC"
+
+jobs:
+  - script: >
+      pipelineJob('hello-node-docker-pipeline') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/BhaktaBhusanDas/hello-node-docker.git')
+                }
+                branches('*/*')
+              }
+            }
+            scriptPath('Jenkinsfile')
+          }
+        }
+      }
+EOF
+
+# Create systemd override to skip setup wizard and setup jenkins.yaml
 sudo mkdir -p /etc/systemd/system/jenkins.service.d
 sudo tee /etc/systemd/system/jenkins.service.d/override.conf << EOF
 [Service]
 Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
 EOF
 
 # Create skip setup wizard script
@@ -66,6 +94,9 @@ instance.setInstallState(InstallState.INITIAL_SETUP_COMPLETED)
 instance.save()
 println "Setup wizard skipped successfully"
 EOF
+
+# Adding the jenkins user to the docker group.
+sudo usermod -aG docker jenkins
 
 # Create plugin installation script
 sudo tee /var/lib/jenkins/init.groovy.d/02-install-plugins.groovy << 'PLUGINEOF'
@@ -102,7 +133,9 @@ def plugins = [
   'docker-workflow',
   'blueocean',
   'dark-theme',
-  'nodejs'
+  'nodejs',
+  'configuration-as-code',
+  'job-dsl'
 ]
 
 def newlyInstalled = false
@@ -217,9 +250,62 @@ Jenkins.instance.save()
 println("Dark theme ('$${targetDescriptor.getDisplayName()}') has been applied globally.")
 DARKOF
 
+# Automating docker hub credential creation
+cat << 'GROOVY' > /var/lib/jenkins/init.groovy.d/06-create-dockerhub-creds.groovy
+#!/usr/bin/env groovy
+import jenkins.model.Jenkins
+import com.cloudbees.plugins.credentials.*
+import com.cloudbees.plugins.credentials.common.*
+import com.cloudbees.plugins.credentials.domains.Domain
+import com.cloudbees.plugins.credentials.impl.*
+import hudson.util.Secret
+
+// Docker Hub credential parameters
+def dockerHubCredentials = [
+    id: 'docker-hub-creds',
+    description: 'Docker Hub credentials for pushing images',
+    username: "${dockerhub_username}",
+    password: "${dockerhub_password}"
+]
+
+// Get Jenkins instance and credentials store
+Jenkins jenkins = Jenkins.getInstance()
+def domain = Domain.global()
+def store = jenkins.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
+
+// Check if credential already exists
+def existingCredentials = store.getCredentials(domain)
+def credentialExists = existingCredentials.any { it.id == dockerHubCredentials.id }
+
+if (credentialExists) {
+    println "Credential with ID '$${dockerHubCredentials.id}' already exists. Skipping creation."
+} else {
+    // Create username/password credential
+    def dockerHubCredential = new UsernamePasswordCredentialsImpl(
+        CredentialsScope.GLOBAL,
+        dockerHubCredentials.id,
+        dockerHubCredentials.description,
+        dockerHubCredentials.username,
+        dockerHubCredentials.password
+    )
+
+    // Add credential to store
+    store.addCredentials(domain, dockerHubCredential)
+
+    // Save changes to disk
+    jenkins.save()
+
+    println "Successfully created Docker Hub credential with ID: $${dockerHubCredentials.id}"
+}
+GROOVY
+
 # Set proper ownership and permissions for all init scripts
 sudo chown -R jenkins:jenkins /var/lib/jenkins/init.groovy.d/
 sudo chmod 644 /var/lib/jenkins/init.groovy.d/*.groovy
+
+
+# Set proper ownership
+chown -R jenkins:jenkins /var/lib/jenkins/casc_configs
 
 # Enable and start Jenkins
 sudo systemctl daemon-reload
@@ -258,6 +344,3 @@ echo "Jenkins bootstrap completed successfully!"
 echo "Jenkins should be accessible at: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):8080"
 echo "Admin credentials: ${admin_username} / ${admin_password}"
 echo "Run 'sudo /usr/local/bin/jenkins-status.sh' to check status"
-# Adding the jenkins user to the docker group.
-sudo usermod -aG docker jenkins
-sudo systemctl restart jenkins
