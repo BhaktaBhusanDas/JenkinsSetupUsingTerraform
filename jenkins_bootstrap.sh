@@ -72,6 +72,9 @@ jobs:
             scriptPath('Jenkinsfile')
           }
         }
+        triggers {
+          githubPush() // This is the GitHub webhook trigger
+        }
       }
 EOF
 

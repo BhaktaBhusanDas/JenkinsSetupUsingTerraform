@@ -31,3 +31,23 @@ variable "dockerhub_password" {
   description = "Docker Hub password or access token"
   type        = string
 }
+
+variable "github_token" {
+  description = "Github token to update the Webhook."
+  type        = string
+}
+
+variable "github_owner" {
+  description = "Your GitHub username."
+  type        = string
+}
+
+variable "github_repo" {
+  description = "Name of the target repository."
+  type        = string
+}
+
+variable "github_webhook_id" {
+  description = "ID of the target webhook."
+  type        = string
+}
