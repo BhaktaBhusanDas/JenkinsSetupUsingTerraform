@@ -76,6 +76,35 @@ jobs:
           githubPush() // This is the GitHub webhook trigger
         }
       }
+
+  - script: >
+      pipelineJob('rollback-deployment') {
+        displayName('Application Rollback Pipeline')
+        description('Automated rollback pipeline with pre-configured parameters')
+        
+        parameters {
+          choiceParam('VERSION', ['1', '2', '3'], 'Select version to roll back to')
+          stringParam('CONTAINER_NAME', 'hello-node-app', 'Name of the container to rollback')
+          stringParam('IMAGE_REPO', 'bhaktabhusandas/hello-node-app', 'Docker repository name')
+          stringParam('HOST_PORT', '3000', 'Host port to expose')
+          stringParam('CONTAINER_PORT', '3000', 'Container internal port')
+        }
+        
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/BhaktaBhusanDas/hello-node-docker.git')
+                }
+                branches('*/*')
+              }
+            }
+            scriptPath('RollbackJenkinsfile')
+          }
+        }
+      }
+
 EOF
 
 # Create systemd override to skip setup wizard and setup jenkins.yaml
