@@ -58,7 +58,7 @@ jenkins:
 
 jobs:
   - script: >
-      pipelineJob('hello-node-docker-pipeline') {
+      pipelineJob('Application Deployment Pipeline') {
         definition {
           cpsScm {
             scm {
