@@ -3,6 +3,11 @@ output "jenkins_url" {
   value       = "http://${aws_instance.Jenkins.public_ip}:8080"
 }
 
+output "Application_url" {
+  description = "URL to access Jenkins"
+  value       = "http://${aws_instance.Jenkins.public_ip}:3000"
+}
+
 output "jenkins_public_ip" {
   description = "Public IP of Jenkins server"
   value       = aws_instance.Jenkins.public_ip
