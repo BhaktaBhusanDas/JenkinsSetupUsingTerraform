@@ -174,7 +174,7 @@ Essential Plugins:
 
 **Automated Pipeline Jobs:**
 
-1. **hello-node-docker-pipeline:**
+1. **Application Deployment Pipeline:**
    - Triggered by GitHub webhooks
    - Builds, tests, and deploys Node.js application
    - Automatic Docker image creation and push
