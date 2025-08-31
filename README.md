@@ -57,12 +57,13 @@ cd JenkinsSetupUsingTerraform
 
 ### 2. Configure Variables
 
-Create `terraform.tfvars` in the project root with all required values:
+#### Non-Sensitive Variables (terraform.tfvars)
+
+Create `terraform.tfvars` in the project root with non-sensitive values:
 
 ```hcl
 # Jenkins Configuration
 jenkins_admin_username = "JenkinsAdmin"
-jenkins_admin_password = "your-secure-password"
 environment = "production"
 
 # AWS Configuration
@@ -70,16 +71,29 @@ key_name = "your-ec2-key-pair-name"
 
 # Docker Hub Integration
 dockerhub_username = "your-dockerhub-username"
-dockerhub_password = "your-dockerhub-access-token"
 
 # GitHub Integration (for webhook automation)
-github_token = "ghp_your-github-personal-access-token"
 github_owner = "your-github-username"
 github_repo = "target-repository-name"
 github_webhook_id = "your-webhook-id"
 ```
 
-**⚠️ Security Note:** Never commit `terraform.tfvars` to version control. It's already included in `.gitignore`.
+#### Sensitive Variables (Environment Variables)
+
+For security best practices, sensitive data is passed through environment variables:
+
+```bash
+# Set environment variables for the follwoing sensitive data
+- jenkins_admin_password
+- your-dockerhub-access-token
+- ghp_your-github-personal-access-token
+```
+
+**🔒 Security Benefits:**
+- Sensitive data never stored in configuration files
+- No risk of accidentally committing secrets
+- Environment-specific credential management
+- Better CI/CD integration for automated deployments
 
 ### 3. Initialize and Deploy
 
@@ -252,6 +266,11 @@ graph TB
 ## 🚀 Quick Start Example
 
 ```bash
+# Set environment variables for the follwoing sensitive data
+- jenkins_admin_password
+- your-dockerhub-access-token
+- ghp_your-github-personal-access-token
+
 # Complete deployment in under 10 minutes
 git clone https://github.com/BhaktaBhusanDas/JenkinsSetupUsingTerraform.git
 cd JenkinsSetupUsingTerraform
@@ -266,8 +285,6 @@ terraform apply -auto-approve
 ```
 
 ## 📈 Monitoring and Troubleshooting
-
-### Health Checks
 
 ### Common Issues and Solutions
 
@@ -299,6 +316,13 @@ docker --version
 sudo usermod -aG docker jenkins
 sudo systemctl restart jenkins
 ```
+**Environment Variable Issues:**
+```bash
+# Verify environment variables are set
+echo $TF_VAR_jenkins_admin_password
+echo $TF_VAR_dockerhub_password
+echo $TF_VAR_github_token
+```
 
 ## 🔄 Maintenance and Updates
 
@@ -321,16 +345,21 @@ terraform apply
 
 ## 📝 Environment Variables Reference
 
-### Required Variables
+### Terraform Environment Variables (Sensitive)
+
+| Variable | Description |
+|----------|-------------|
+| `TF_VAR_jenkins_admin_password` | Jenkins admin password |
+| `TF_VAR_dockerhub_password` | Docker Hub access token |
+| `TF_VAR_github_token` | GitHub personal access token |
+
+### terraform.tfvars Variables (Non-Sensitive)
 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `jenkins_admin_username` | Jenkins admin username | `"JenkinsAdmin"` |
-| `jenkins_admin_password` | Jenkins admin password | `"secure-password"` |
 | `key_name` | AWS EC2 key pair name | `"my-key-pair"` |
 | `dockerhub_username` | Docker Hub username | `"username"` |
-| `dockerhub_password` | Docker Hub access token | `"dckr_pat_..."` |
-| `github_token` | GitHub personal access token | `"ghp_..."` |
 | `github_owner` | GitHub repository owner | `"username"` |
 | `github_repo` | Target repository name | `"hello-node-docker"` |
 | `github_webhook_id` | GitHub webhook ID | `"564183434"` |
