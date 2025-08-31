@@ -269,19 +269,6 @@ terraform apply -auto-approve
 
 ### Health Checks
 
-**Automated Status Monitoring:**
-```bash
-# Use the built-in status script
-sudo /usr/local/bin/jenkins-status.sh
-```
-
-**Status Script Features:**
-- Jenkins service status
-- Process monitoring
-- Port availability check
-- Recent log analysis
-- Bootstrap process verification
-
 ### Common Issues and Solutions
 
 **Jenkins Not Starting:**
